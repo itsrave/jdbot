@@ -31,11 +31,11 @@ def actualyear():
 def woman():
     global nick
     # adj
-    adjline = randomline('przymiotniki.txt')
+    adjline = randomline('fun/przymiotniki.txt')
     adjline = adjline[:-2].capitalize()
     adj = adjline + 'a'
     # name
-    nameline = randomline('woman.txt')
+    nameline = randomline('fun/woman.txt')
     nameline = nameline[:-1]
     myage = age()
     nick = adj + nameline + myage
@@ -44,10 +44,10 @@ def woman():
 def man():
     global nick
     # adj
-    adjline = randomline('przymiotniki.txt').capitalize()
+    adjline = randomline('fun/przymiotniki.txt').capitalize()
     adjline = adjline[:-1]
     # name
-    nameline = randomline('man.txt')
+    nameline = randomline('fun/man.txt')
     nameline = nameline[:-1]
     myage = age()
     nick = adjline + nameline + myage

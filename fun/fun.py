@@ -2,7 +2,7 @@ import asyncio
 import discord
 from discord.ext import commands
 import random
-from nickgen import nickgen
+from fun.nickgen import nickgen
 
 class Fun:
     def __init__(self, client):

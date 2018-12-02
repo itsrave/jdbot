@@ -11,7 +11,7 @@ TOKEN = gettoken()
 
 client = commands.Bot(command_prefix='./')
 
-extensions = ['fun', 'music', 'roast', 'champion']
+extensions = ['fun.fun', 'sound.music', 'fun.roast', 'fun.champion']
 
 # ready info
 

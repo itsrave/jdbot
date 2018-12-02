@@ -2,7 +2,7 @@ import random
 
 
 def getline():
-    line = random.choice(open('wrzuty.txt').readlines())
+    line = random.choice(open('fun/wrzuty.txt').readlines())
     return line
 
 
