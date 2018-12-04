@@ -1,6 +1,7 @@
 import asyncio
 from discord.ext import commands
 import discord
+import os
 
 players = {}
 queues = {}
@@ -34,21 +35,21 @@ class Music:
     @commands.command(pass_context=True)
     async def play(self, ctx, url):
         try:
-            beforeArgs = "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5"
+            beforeargs = "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5"
             server = ctx.message.server
             vc = self.client.voice_client_in(server)
             player = await vc.create_ytdl_player(url, ytdl_options={
-                'default_search': 'auto'}, before_options=beforeArgs, after=lambda: asyncio.run_coroutine_threadsafe(checkqueue(server.id)))
+                'default_search': 'auto'}, before_options=beforeargs, after=lambda: asyncio.run_coroutine_threadsafe(checkqueue(server.id)))
             players[server.id] = player
             player.start()
         except AttributeError:
-            beforeArgs = "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5"
+            beforeargs = "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5"
             server = ctx.message.server
             channel = ctx.message.author.voice.voice_channel
             await self.client.join_voice_channel(channel)
             vc = self.client.voice_client_in(server)
             player = await vc.create_ytdl_player(url, ytdl_options={
-                'default_search': 'auto'}, before_options=beforeArgs, after=lambda: asyncio.run_coroutine_threadsafe(checkqueue(server.id)))
+                'default_search': 'auto'}, before_options=beforeargs, after=lambda: asyncio.run_coroutine_threadsafe(checkqueue(server.id)))
             players[server.id] = player
             player.start()
     # rmffm
@@ -97,17 +98,91 @@ class Music:
 
     @commands.command(pass_context=True)
     async def queue(self, ctx, url):
-        beforeArgs = "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5"
+        beforeargs = "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5"
         server = ctx.message.server
         vc = self.client.voice_client_in(server)
         player = await vc.create_ytdl_player(url, ytdl_options={
-                'default_search': 'auto'}, before_options=beforeArgs, after=lambda: checkqueue(server.id))
+                'default_search': 'auto'}, before_options=beforeargs, after=lambda: checkqueue(server.id))
         if server.id in queues:
             queues[server.id].append(player)
         else:
             queues[server.id] = [player]
         await self.client.say('Video queued')
+    # playlist
 
+    @commands.group(pass_context=True)
+    async def playlist(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await self.client.say('Avaiable subcommands:')
 
+    @playlist.command(pass_context=True)
+    async def create(self, ctx, plsname):
+        server = ctx.message.server
+        path = os.getcwd()
+        dirpath = path + "\sound\playlist\\" + server.id
+        try:
+            os.mkdir(dirpath)
+        except FileExistsError:
+            pass
+        if os.path.isfile("{}\{}.txt".format(dirpath, plsname)) is True:
+            await self.client.say("Playlist \'{}\' already exist, choose another name.".format(plsname))
+        else:
+            open("{}\{}.txt".format(dirpath, plsname), 'a').close()
+            await self.client.say("Playlist \'{}\' created!".format(plsname))
+
+    @playlist.command(pass_context=True)
+    async def delete(self, ctx, plsname):
+        server = ctx.message.server
+        path = os.getcwd()
+        dirpath = path + "\sound\playlist\\" + server.id
+        if os.path.isfile("{}\{}.txt".format(dirpath, plsname)) is False:
+            await self.client.say("Playlist \'{}\' doesn't exist.".format(plsname))
+        else:
+            os.remove("{}\{}.txt".format(dirpath, plsname))
+            await self.client.say("Playlist \'{}\' succefully delete.".format(plsname))
+
+    @playlist.command(pass_context=True)
+    async def add(self, ctx, plsname, link):
+        server = ctx.message.server
+        path = os.getcwd()
+        dirpath = path + "\sound\playlist\\" + server.id
+        if os.path.isfile("{}\{}.txt".format(dirpath, plsname)) is True:
+            file = open("{}\{}.txt".format(dirpath, plsname,), 'a')
+            file.write(link + "\n")
+            file.close()
+            await self.client.say("Added {} to playlist \'{}\'".format(link, plsname))
+        else:
+            await self.client.say("Playlist \'{}\' doesn't exist.".format(plsname))
+
+    @playlist.command(pass_context=True)
+    async def remove(self, ctx, plsname, link):
+        server = ctx.message.server
+        path = os.getcwd()
+        dirpath = path + "\sound\playlist\\" + server.id
+        if os.path.isfile("{}\{}.txt".format(dirpath, plsname)) is True:
+            file = open("{}\{}.txt".format(dirpath, plsname,), 'r')
+            filedata = file.read()
+            file.close()
+            newdata = filedata.replace(link + "\n", "")
+            file = open("{}\{}.txt".format(dirpath, plsname, ), 'w')
+            file.write(newdata)
+            file.close()
+            await self.client.say("Removed {} from playlist \'{}\'".format(link, plsname))
+        else:
+            await self.client.say("Playlist \'{}\' doesn't exist.".format(plsname))
+
+    @playlist.command(pass_context=True)
+    async def view(self, ctx, plsname):
+        server = ctx.message.server
+        path = os.getcwd()
+        dirpath = path + "\sound\playlist\\" + server.id
+        if os.path.isfile("{}\{}.txt".format(dirpath, plsname)) is True:
+            file = open("{}\{}.txt".format(dirpath, plsname,), 'r')
+            filedata = file.read()
+            file.close()
+            await self.client.say("{}".format(filedata))
+        else:
+            await self.client.say("Playlist \'{}\' doesn't exist.".format(plsname))
+            
 def setup(client):
     client.add_cog(Music(client))

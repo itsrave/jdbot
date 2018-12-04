@@ -9,7 +9,7 @@ from apikey.key import *
 # your apikey and command prefix
 TOKEN = gettoken()
 
-client = commands.Bot(command_prefix='./')
+client = commands.Bot(command_prefix='$')
 
 extensions = ['fun.fun', 'sound.music', 'fun.roast', 'fun.champion']
 
@@ -29,6 +29,7 @@ async def on_ready():
 #async def on_command_error(error, ctx):
 #    print(error, ctx)
 
+
 @client.command()
 async def load(extension):
     try:
@@ -45,6 +46,7 @@ async def unload(extension):
         print('Unloaded {}'.format(extension))
     except Exception as error:
         print('{} cannot be unloaded. [{}]'.format(extension, error))
+
 
 @client.command()
 async def reload():
@@ -63,4 +65,3 @@ if __name__ == '__main__':
         except Exception as error:
             print('{} cannot be loaded. [{}]'.format(extension, error))
     client.run(TOKEN)
-
