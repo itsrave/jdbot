@@ -50,6 +50,16 @@ async def unload(extension):
         print('{} cannot be unloaded. [{}]'.format(extension, error))
 
 
+@client.command()
+async def reload():
+    for extension in extensions:
+        try:
+            client.unload_extension(extension)
+            client.load_extension(extension)
+        except Exception as error:
+            print('{} cannot be loaded. [{}]'.format(extension, error))
+
+
 # externsion loading
 if __name__ == '__main__':
     for extension in extensions:
