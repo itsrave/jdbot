@@ -4,6 +4,12 @@ from discord.ext import commands
 import random
 from fun.nickgen import nickgen
 
+
+def randomnumber():
+    number = str(random.randint(0, 100))
+    return number
+
+
 class Fun:
     def __init__(self, client):
         self.client = client
@@ -11,13 +17,11 @@ class Fun:
     # just simple funny text commands
     @commands.command()
     async def jd(self):
-        number = str(random.randint(0, 100))
-        await self.client.say('Jebiesz Disa na {}%!'.format(number))
+        await self.client.say('Jebiesz Disa na {}%!'.format(randomnumber()))
 
     @commands.command()
     async def zjeb(self):
-        number = str(random.randint(0, 100))
-        await self.client.say('Jesteś zjebem w {}%!'.format(number))
+        await self.client.say('Jesteś zjebem w {}%!'.format(randomnumber()))
 
     @commands.command(pass_context=True)
     async def nick(self, ctx):

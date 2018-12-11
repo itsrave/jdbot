@@ -1,5 +1,7 @@
 import random
 import datetime
+
+
 def randomline(file):
     line = random.choice(open(file).readlines())
     return line
