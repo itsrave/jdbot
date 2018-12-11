@@ -33,6 +33,12 @@ class Fun:
         user = ctx.message.author
         await self.client.change_nickname(user, None)
 
+    # zdjecia
+    @commands.command(pass_context=True)
+    async def marciniak(self, ctx):
+        channel = ctx.message.channel
+        await self.client.send_file(channel, 'img/marcin.gif')
+
     @commands.command(pass_context=True)
     async def leno(self, ctx):
         try:
