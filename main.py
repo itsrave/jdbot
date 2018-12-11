@@ -13,6 +13,7 @@ client = commands.Bot(command_prefix='$')
 
 extensions = ['fun.fun', 'sound.music', 'fun.roast', 'fun.champion']
 
+
 # ready info
 
 
@@ -25,9 +26,10 @@ async def on_ready():
     print('------------')
     await client.change_presence(game=discord.Game(name='Ruchanie matek, najczesciej twojej'))
 
-#@client.event
-#async def on_command_error(error, ctx):
-#    print(error, ctx)
+
+@client.event
+async def on_command_error(error, ctx):
+    print(error, ctx)
 
 
 @client.command()
@@ -56,6 +58,7 @@ async def reload():
             client.load_extension(extension)
         except Exception as error:
             print('{} cannot be loaded. [{}]'.format(extension, error))
+
 
 # externsion loading
 if __name__ == '__main__':
