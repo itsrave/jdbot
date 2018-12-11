@@ -9,7 +9,7 @@ from apikey.key import *
 # your apikey and command prefix
 TOKEN = gettoken()
 
-client = commands.Bot(command_prefix='$')
+client = commands.Bot(command_prefix='./')
 
 extensions = ['fun.fun', 'sound.music', 'fun.roast', 'fun.champion']
 

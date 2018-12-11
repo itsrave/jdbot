@@ -3,6 +3,8 @@ from discord.ext import commands
 import discord
 import os
 
+from youtube_dl import DownloadError
+
 players = {}
 queues = {}
 
@@ -191,26 +193,29 @@ class Music:
         else:
             await self.client.say("Playlist \'{}\' doesn't exist.".format(plsname))
 
-    # @playlist.command(pass_context=True)
-    # async def play(self, ctx, plsname):
-    #     server = ctx.message.server
-    #     path = os.getcwd()
-    #     dirpath = path + "/sound/playlist/" + server.id
-    #     file = open("{}/{}.txt".format(dirpath, plsname))
-    #     lines = file.readlines()
-    #     for link in lines:
-    #         if link.startswith('https://'):
-    #             beforeargs = "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5"
-    #             vc = self.client.voice_client_in(server)
-    #             player = await vc.create_ytdl_player(link, ytdl_options={
-    #                 'default_search': 'auto'}, before_options=beforeargs, after=lambda: checkqueue(server.id))
-    #             if server.id in queues:
-    #                 queues[server.id].append(player)
-    #             else:
-    #                 queues[server.id] = [player]
-    #             await self.client.say('Video queued: {}'.format(link))
-    #         else:
-    #             pass
+    @playlist.command(name="play", pass_context=True)
+    async def playlistplay(self, ctx, plsname):
+        server = ctx.message.server
+        path = os.getcwd()
+        dirpath = path + "/sound/playlist/" + server.id
+        file = open("{}/{}.txt".format(dirpath, plsname))
+        lines = file.readlines()
+        for link in lines:
+            try:
+                if link.startswith('https://'):
+                    beforeargs = "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5"
+                    vc = self.client.voice_client_in(server)
+                    player = await vc.create_ytdl_player(link, ytdl_options={
+                        'default_search': 'auto'}, before_options=beforeargs, after=lambda: checkqueue(server.id))
+                    if server.id in queues:
+                        queues[server.id].append(player)
+                    else:
+                        queues[server.id] = [player]
+                    await self.client.say('Video queued: {}'.format(link))
+            except DownloadError:
+                pass
+            else:
+                pass
 
 
 def setup(client):
